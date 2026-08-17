@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Smart Route Optimizer</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+        }
+
+        .container {
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        input,
+        select,
+        button {
+            padding: 10px;
+            margin: 8px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f5f5f5;
+            display: none;
+        }
+
+        #comparison {
+            margin-top: 25px;
+            display: none;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+
+        .error {
+            color: red;
+            margin-top: 15px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Smart Route Optimizer</h1>
+
+    <label>Source</label>
+
+    <input
+            type="text"
+            id="source"
+            placeholder="e.g. Delhi"
+    >
+
+    <button onclick="useCurrentLocation()">
+        📍 Use My Current Location
+    </button>
+
+    <p id="locationStatus"></p>
+
+    <label>Destination</label>
+
+    <input
+            type="text"
+            id="destination"
+            placeholder="e.g. Meerut"
+    >
+
+    <label>Algorithm</label>
+
+    <select id="algorithm">
+
+        <option value="Dijkstra">
+            Dijkstra
+        </option>
+
+        <option value="BFS">
+            BFS
+        </option>
+
+        <option value="A*">
+            A*
+        </option>
+
+    </select>
+
+    <button onclick="findRoute()">
+        Find Route
+    </button>
+
+    <button onclick="compareAlgorithms()">
+        Compare All Algorithms
+    </button>
+
+    <p id="locationStatus"></p>
+
+    <div id="result">
+
+        <h2>Route Result</h2>
+
+        <p>
+            <strong>Algorithm:</strong>
+            <span id="resultAlgorithm"></span>
+        </p>
+
+        <p>
+            <strong>Path:</strong>
+            <span id="resultPath"></span>
+        </p>
+
+        <p>
+            <strong>Distance:</strong>
+            <span id="resultDistance"></span> km
+        </p>
+
+        <p>
+            <strong>Execution Time:</strong>
+            <span id="resultTime"></span> ms
+        </p>
+
+    </div>
+
+
+    <!-- Error Message -->
+
+    <div id="error" class="error"></div>
+
+
+    <!-- Algorithm Comparison -->
+
+    <div id="comparison">
+
+        <h2>Algorithm Comparison</h2>
+
+        <table>
+
+            <thead>
+
+            <tr>
+
+                <th>Algorithm</th>
+
+                <th>Path</th>
+
+                <th>Distance (km)</th>
+
+                <th>Execution Time (ms)</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody id="comparisonBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    async function useCurrentLocation() {
+
+        const status =
+            document.getElementById("locationStatus");
+
+        if (!navigator.geolocation) {
+
+            status.textContent =
+                "Geolocation is not supported by this browser.";
+
+            return;
+        }
+
+        status.textContent =
+            "Getting your location...";
+
+        navigator.geolocation.getCurrentPosition(
+
+            async function(position) {
+
+                const latitude =
+                    position.coords.latitude;
+
+                const longitude =
+                    position.coords.longitude;
+
+                try {
+
+                    const response = await fetch(
+                        "/api/routes/nearest-city",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                latitude: latitude,
+                                longitude: longitude
+                            })
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not determine nearest city."
+                        );
+                    }
+
+                    const city =
+                        await response.json();
+
+                    document.getElementById("source")
+                        .value = city.name;
+
+                    status.textContent =
+                        "Nearest city: " + city.name;
+
+                } catch (error) {
+
+                    status.textContent =
+                        error.message;
+                }
+            },
+
+            function(error) {
+
+                status.textContent =
+                    "Unable to access your location.";
+            }
+        );
+    }
+
+    async function findRoute() {
+
+        clearError();
+
+        const source =
+            document.getElementById("source").value.trim();
+
+        const destination =
+            document.getElementById("destination").value.trim();
+
+        const algorithm =
+            document.getElementById("algorithm").value;
+
+        if (!source || !destination) {
+
+            showError(
+                "Please enter both source and destination."
+            );
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                "/api/routes/find",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        source: source,
+                        destination: destination,
+                        algorithm: algorithm
+                    })
+                }
+            );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to find route."
+                );
+            }
+
+            const data = await response.json();
+
+            document.getElementById("result")
+                .style.display = "block";
+
+            document.getElementById("resultAlgorithm")
+                .textContent = data.algorithm;
+
+            document.getElementById("resultPath")
+                .textContent = data.path.join(" → ");
+
+            document.getElementById("resultDistance")
+                .textContent = data.distance;
+
+            document.getElementById("resultTime")
+                .textContent = data.executionTime;
+
+        } catch (error) {
+
+            showError(error.message);
+        }
+    }
+
+
+    async function compareAlgorithms() {
+
+        clearError();
+
+        const source =
+            document.getElementById("source").value.trim();
+
+        const destination =
+            document.getElementById("destination").value.trim();
+
+        if (!source || !destination) {
+
+            showError(
+                "Please enter both source and destination."
+            );
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                "/api/routes/compare",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        source: source,
+
+                        destination: destination,
+
+                        algorithm: "Dijkstra"
+
+                    })
+                }
+            );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to compare algorithms."
+                );
+            }
+
+            const results =
+                await response.json();
+
+            const tableBody =
+                document.getElementById(
+                    "comparisonBody"
+                );
+
+            tableBody.innerHTML = "";
+
+            results.forEach(result => {
+
+                const row =
+                    document.createElement("tr");
+
+                const algorithmCell =
+                    document.createElement("td");
+
+                algorithmCell.textContent =
+                    result.algorithm;
+
+                const pathCell =
+                    document.createElement("td");
+
+                pathCell.textContent =
+                    result.path.join(" → ");
+
+                const distanceCell =
+                    document.createElement("td");
+
+                distanceCell.textContent =
+                    result.distance;
+
+                const timeCell =
+                    document.createElement("td");
+
+                timeCell.textContent =
+                    result.executionTime;
+
+                row.appendChild(algorithmCell);
+
+                row.appendChild(pathCell);
+
+                row.appendChild(distanceCell);
+
+                row.appendChild(timeCell);
+
+                tableBody.appendChild(row);
+
+            });
+
+            document.getElementById("comparison")
+                .style.display = "block";
+
+        } catch (error) {
+
+            showError(error.message);
+        }
+    }
+
+
+    function showError(message) {
+
+        document.getElementById("error")
+            .textContent = message;
+    }
+
+
+    function clearError() {
+
+        document.getElementById("error")
+            .textContent = "";
+    }
+
+</script>
+
+</body>
+
+</html>
