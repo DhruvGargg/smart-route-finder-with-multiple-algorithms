@@ -1,5 +1,6 @@
 package com.example.smartrouteanddeliveryoptimizer.entity;
 
+import com.example.smartrouteanddeliveryoptimizer.enums.RoadStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -30,5 +31,8 @@ public class Road {
 
     @Min(0)
     private Integer travelTime;
+
+    @Enumerated(EnumType.STRING)
+    RoadStatus status =  RoadStatus.ACTIVE;
 
 }

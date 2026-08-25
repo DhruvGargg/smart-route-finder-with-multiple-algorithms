@@ -7,7 +7,6 @@ import java.util.*;
 @Component
 public class DijkstraAlgorithm implements Algorithm {
 
-
     @Override
     public RouteResult findShortestPath(
             String source,

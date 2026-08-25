@@ -26,13 +26,16 @@ public class AStarAlgorithm implements Algorithm {
 
         Map<String, Coordinates> coordinates = new HashMap<>();
         for(City city : cityRepository.findAll()) {
-            coordinates.put(city.getName(), new Coordinates(city.getLatitude(), city.getLongitude()));
+            coordinates.put(
+                    city.getName(),
+                    new Coordinates(city.getLatitude(), city.getLongitude())
+            );
         }
 
         long startTime = System.nanoTime();
 
-        HashMap<String, Integer> gScore = new HashMap<>();
-        HashMap<String, String> parent = new HashMap<>();
+        Map<String, Integer> gScore = new HashMap<>();
+        Map<String, String> parent = new HashMap<>();
 
         PriorityQueue<AStarNode> priorityQueue =
                 new PriorityQueue<>(
