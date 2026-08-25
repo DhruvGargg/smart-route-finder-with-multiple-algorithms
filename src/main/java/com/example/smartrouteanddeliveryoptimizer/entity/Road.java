@@ -21,10 +21,10 @@ public class Road {
     private int id;
 
     @Column(nullable = false)
-    String source;
+    private String source;
 
     @Column(nullable = false)
-    String destination;
+    private String destination;
 
     @Column(nullable = false)
     int distance;
