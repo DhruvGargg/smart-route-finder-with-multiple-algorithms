@@ -1,4 +1,4 @@
 package com.example.smartrouteanddeliveryoptimizer.service.implementation;
 
-public interface RouteService {
+public class DeliveryServiceImplementation {
 }
