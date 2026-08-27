@@ -1,4 +1,4 @@
 package com.example.smartrouteanddeliveryoptimizer.enums;
 
-public class DeliveryPriority {
+public class AssignedDeliveryResponse {
 }
