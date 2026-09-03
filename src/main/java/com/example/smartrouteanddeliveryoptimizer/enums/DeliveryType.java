@@ -3,7 +3,7 @@ package com.example.smartrouteanddeliveryoptimizer.enums;
 import lombok.Getter;
 
 @Getter
-public enum DeliveryPriority {
+public enum DeliveryType {
 
     PRIORITY(12),
     EXPRESS(24),
@@ -11,7 +11,7 @@ public enum DeliveryPriority {
 
     private final int deliveryHours;
 
-    DeliveryPriority(int deliveryHours) {
+    DeliveryType(int deliveryHours) {
         this.deliveryHours = deliveryHours;
     }
 

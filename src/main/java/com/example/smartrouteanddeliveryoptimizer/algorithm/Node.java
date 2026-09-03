@@ -8,6 +8,6 @@ import lombok.Getter;
 public class Node {
 
     private String node;
-    private int distance;
+    private Integer distance;
 
 }

@@ -18,9 +18,9 @@ public class City {
     private String name;
 
     @Column(nullable = false)
-    private double latitude;
+    private Double latitude;
 
     @Column(nullable = false)
-    private double longitude;
+    private Double longitude;
 
 }

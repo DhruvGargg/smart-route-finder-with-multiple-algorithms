@@ -18,7 +18,7 @@ public class Road {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(nullable = false)
     private String source;
@@ -27,12 +27,13 @@ public class Road {
     private String destination;
 
     @Column(nullable = false)
-    int distance;
+    private Integer distance;
 
     @Min(0)
     private Integer travelTime;
 
     @Enumerated(EnumType.STRING)
-    RoadStatus status =  RoadStatus.ACTIVE;
+    @Column(nullable = false)
+    private RoadStatus status =  RoadStatus.ACTIVE;
 
 }

@@ -11,18 +11,19 @@ import com.example.smartrouteanddeliveryoptimizer.entity.Road;
 import com.example.smartrouteanddeliveryoptimizer.enums.RoadStatus;
 import com.example.smartrouteanddeliveryoptimizer.repository.CityRepository;
 import com.example.smartrouteanddeliveryoptimizer.repository.RoadRepository;
+import com.example.smartrouteanddeliveryoptimizer.service.RouteService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class RouteService {
+public class RouteServiceImplementation implements RouteService {
 
     private final RoadRepository roadRepository;
     private final List<Algorithm> algorithms;
     private final CityRepository cityRepository;
 
-    public RouteService(
+    public RouteServiceImplementation(
             RoadRepository roadRepository,
             List<Algorithm> algorithms,
             CityRepository cityRepository
@@ -62,6 +63,14 @@ public class RouteService {
             );
         }
         return results;
+    }
+
+    public RouteResponse findShortestRoute(
+            String source,
+            String destination,
+            String algorithm
+    ) {
+        return findShortestRoute(new RouteRequest(source, destination, algorithm));
     }
 
     public RouteResponse findShortestRoute(RouteRequest routeRequest) {

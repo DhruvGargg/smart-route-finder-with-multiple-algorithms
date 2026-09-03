@@ -1,4 +1,4 @@
-package com.example.smartrouteanddeliveryoptimizer.enums;
+package com.example.smartrouteanddeliveryoptimizer.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

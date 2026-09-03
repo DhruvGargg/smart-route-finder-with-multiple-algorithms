@@ -43,7 +43,7 @@ public class DijkstraAlgorithm implements Algorithm {
                 break;
             }
 
-            for(Edge edge : graph.get(currentNode)) {
+            for(Edge edge : graph.getOrDefault(currentNode, Collections.emptyList())) {
 
                 String neighbour = edge.getDestination();
 

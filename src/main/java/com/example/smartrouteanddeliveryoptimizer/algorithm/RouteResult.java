@@ -11,7 +11,7 @@ public class RouteResult {
 
     private List<String> path;
 
-    private int distance;
+    private Integer distance;
 
-    private long executionTime;
+    private Long executionTime;
 }

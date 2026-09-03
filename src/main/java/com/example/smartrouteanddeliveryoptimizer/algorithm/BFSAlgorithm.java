@@ -29,7 +29,7 @@ public class BFSAlgorithm implements Algorithm {
             if(current.equals(destination)) {
                 break;
             }
-            for(Edge edge : graph.get(current)) {
+            for(Edge edge : graph.getOrDefault(current, Collections.emptyList())) {
 
                 String neighbour =edge.getDestination();
 

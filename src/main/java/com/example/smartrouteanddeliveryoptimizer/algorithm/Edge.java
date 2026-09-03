@@ -10,5 +10,5 @@ import lombok.ToString;
 public class Edge {
 
     private String destination;
-    private int distance;
+    private Integer distance;
 }
