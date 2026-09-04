@@ -10,5 +10,5 @@ public class DeliveryResponse {
 
     private DeliveryType type;
 
-    
+
 }
