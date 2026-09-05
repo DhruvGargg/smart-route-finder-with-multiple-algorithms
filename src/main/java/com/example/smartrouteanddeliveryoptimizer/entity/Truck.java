@@ -1,10 +1,8 @@
 package com.example.smartrouteanddeliveryoptimizer.entity;
 
 import com.example.smartrouteanddeliveryoptimizer.enums.TruckStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,22 +15,46 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+        name = "trucks",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = "registration_number"
+                )
+        }
+)
 public class Truck {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(
+            name = "registration_number",
+            nullable = false,
+            unique = true
+    )
     private String registrationNumber;
 
-    private Double capacity;
+    @Min(1)
+    @Column(nullable = false)
+    private Double maximumCapacity;
 
     private Double currentLoad;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "current_city_id",
+            nullable = false
+    )
     private String currentCity;
 
+    @Min(0)
+    @Column(nullable = false)
     private Double fuelEfficiency;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TruckStatus status;
 
     private LocalDateTime createdAt;

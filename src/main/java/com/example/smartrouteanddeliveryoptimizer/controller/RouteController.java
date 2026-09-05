@@ -6,6 +6,7 @@ import com.example.smartrouteanddeliveryoptimizer.dto.RouteRequest;
 import com.example.smartrouteanddeliveryoptimizer.dto.RouteResponse;
 import com.example.smartrouteanddeliveryoptimizer.entity.City;
 import com.example.smartrouteanddeliveryoptimizer.entity.Road;
+import com.example.smartrouteanddeliveryoptimizer.service.RouteService;
 import com.example.smartrouteanddeliveryoptimizer.service.implementation.RouteServiceImplementation;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -16,41 +17,41 @@ import java.util.List;
 @RequestMapping("/api/routes")
 public class RouteController {
 
-    private final RouteServiceImplementation routeServiceImplementation;
+    private final RouteService routeService;
 
-    public RouteController(RouteServiceImplementation routeServiceImplementation) {
-        this.routeServiceImplementation = routeServiceImplementation;
+    public RouteController(RouteService routeService) {
+        this.routeService = routeService;
     }
 
     @PostMapping("/find")
     public RouteResponse findRoute(
             @Valid  @RequestBody RouteRequest routeRequest
     ) {
-        return routeServiceImplementation.findShortestRoute(routeRequest);
+        return routeService.findShortestRoute(routeRequest);
     }
 
     @GetMapping("/algorithms")
     public List<String> getAlgorithms() {
-        return routeServiceImplementation.getAvailableAlgorithms();
+        return routeService.getAvailableAlgorithms();
     }
 
     @GetMapping("/roads")
     public List<Road> getRoads() {
-        return routeServiceImplementation.getAllRoads();
+        return routeService.getAllRoads();
     }
 
     @PostMapping("/compare")
     public List<AlgorithmResult> compareAlgorithms(
             @Valid @RequestBody RouteRequest routeRequest
     ) {
-        return routeServiceImplementation.compareAlgorithms(routeRequest);
+        return routeService.compareAlgorithms(routeRequest);
     }
 
     @PostMapping("/nearest-city")
     public City findNearestCity(
             @RequestBody LocationRequest locationRequest
     ) {
-        return routeServiceImplementation.findNearestCity(
+        return routeService.findNearestCity(
                 locationRequest.getLatitude(),
                 locationRequest.getLongitude()
         );
@@ -60,13 +61,13 @@ public class RouteController {
     public Road blockRoad(
             @PathVariable long roadId
     ) {
-        return routeServiceImplementation.blockRoad(roadId);
+        return routeService.blockRoad(roadId);
     }
 
-    @PatchMapping("/roads/")
+    @PatchMapping("/roads/{roadId}/unblock")
     public Road unblockRoad(
             @PathVariable long roadId
     ) {
-        return routeServiceImplementation.unblockRoad(roadId);
+        return routeService.unblockRoad(roadId);
     }
 }
