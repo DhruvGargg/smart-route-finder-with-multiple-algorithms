@@ -47,7 +47,7 @@ public class Truck {
             name = "current_city_id",
             nullable = false
     )
-    private String currentCity;
+    private City currentCity;
 
     @Min(0)
     @Column(nullable = false)

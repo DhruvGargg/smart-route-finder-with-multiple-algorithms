@@ -66,7 +66,7 @@ public class RouteController {
 
     @PatchMapping("/roads/{roadId}/unblock")
     public Road unblockRoad(
-            @PathVariable long roadId
+            @PathVariable Long roadId
     ) {
         return routeService.unblockRoad(roadId);
     }

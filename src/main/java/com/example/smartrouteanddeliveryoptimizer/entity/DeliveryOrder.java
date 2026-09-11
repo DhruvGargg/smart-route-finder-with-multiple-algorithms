@@ -45,4 +45,8 @@ public class DeliveryOrder {
 
     private DeliveryStatus status;
 
+    private LocalDateTime cancellationDeadline;
+
+    private LocalDateTime deliveryDeadline;
+
 }
