@@ -49,4 +49,6 @@ public class DeliveryOrder {
 
     private LocalDateTime deliveryDeadline;
 
+    private TripStop tripStop;
+
 }

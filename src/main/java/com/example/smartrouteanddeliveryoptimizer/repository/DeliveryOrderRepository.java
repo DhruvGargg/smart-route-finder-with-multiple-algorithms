@@ -5,6 +5,7 @@ import com.example.smartrouteanddeliveryoptimizer.entity.Truck;
 import com.example.smartrouteanddeliveryoptimizer.enums.DeliveryStatus;
 import com.example.smartrouteanddeliveryoptimizer.enums.TruckStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,4 +19,13 @@ public interface DeliveryOrderRepository extends JpaRepository<DeliveryOrder, Lo
     List<DeliveryOrder> findByDeliveryCityId(Long deliveryCityId);
 
     List<DeliveryOrder> findByStatusOrderByDeliveryDeadlineDesc(DeliveryStatus status);
+
+    @Query(
+            """
+            SELECT COALESCE(SUM(o.packageWeight), 0)
+            FROM DeliveryOrder o
+            WHERE o.tripStop.trip.id = :tripId
+           """
+    )
+    Double getTotalAssignedWeight(Long tripId);
 }
