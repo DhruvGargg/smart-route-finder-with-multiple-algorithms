@@ -20,6 +20,8 @@ public interface DeliveryOrderRepository extends JpaRepository<DeliveryOrder, Lo
 
     List<DeliveryOrder> findByStatusOrderByDeliveryDeadlineDesc(DeliveryStatus status);
 
+    List<DeliveryOrder> findByStatusOrderByDeliveryDeadlineAsc(DeliveryStatus status);
+
     @Query(
             """
             SELECT COALESCE(SUM(o.packageWeight), 0)
@@ -28,4 +30,9 @@ public interface DeliveryOrderRepository extends JpaRepository<DeliveryOrder, Lo
            """
     )
     Double getTotalAssignedWeight(Long tripId);
+
+    List<DeliveryOrder> findByStatusAndSourceCityIdOrderByDeliveryDeadlineAsc(
+            DeliveryStatus status,
+            Long sourceCityId
+    );
 }

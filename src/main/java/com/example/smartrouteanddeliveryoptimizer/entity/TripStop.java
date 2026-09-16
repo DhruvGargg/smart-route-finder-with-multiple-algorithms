@@ -38,7 +38,9 @@ public class TripStop {
     )
     private City city;
 
-    @Column(nullable = false)
+    @Column(
+            nullable = false
+    )
     private Integer sequenceNumber;
 
     @Column(nullable = false)
