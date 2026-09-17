@@ -18,4 +18,8 @@ public class RouteRequest {
 
     @NotBlank
     private String algorithm;
+
+    public RouteRequest() {
+
+    }
 }
